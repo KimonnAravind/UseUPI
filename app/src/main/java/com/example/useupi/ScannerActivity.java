@@ -8,14 +8,17 @@ import android.content.Intent;
 
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -36,6 +39,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
     private static final int REQUEST_CAMERA = 123;
     ZXingScannerView scannerView;
+    private static final int UPI_PAYMENT=1;
     private IntentIntegrator qrScan;
 
     @Override
@@ -108,8 +112,36 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     @Override
     public void handleResult(Result rawResult) {
         final String scanresult = rawResult.getText();
-        Toast.makeText(ScannerActivity.this, ""+scanresult, Toast.LENGTH_SHORT).show();
+        Uri uri =Uri.parse("upi://pay").buildUpon()
+                .appendQueryParameter("pa",scanresult)
+                .appendQueryParameter("pn", "UPI")
+                .appendQueryParameter("tn", "Hint")
+                .appendQueryParameter("am", "0")
+                .appendQueryParameter("cu","INR").build();
+        Intent upiintent = new Intent(Intent.ACTION_VIEW);
+        upiintent.setData(uri);
 
+        Intent chooser = Intent.createChooser(upiintent,"Pay with");
+        if(null!=chooser.resolveActivity(getPackageManager()))
+        {
+            startActivityForResult(chooser,UPI_PAYMENT);
+        }
+        else
+        {
+            Toast.makeText(ScannerActivity.this, "No UPI appications found", Toast.LENGTH_SHORT).show();
+        }
+
+
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("ONE++", ""+requestCode);
+        Log.e("ONE+++", ""+resultCode);
+        Log.e("ONE++",""+data);
     }
     /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
