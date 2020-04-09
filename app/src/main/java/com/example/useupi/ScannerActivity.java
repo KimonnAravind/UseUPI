@@ -39,7 +39,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
     private static final int REQUEST_CAMERA = 123;
     ZXingScannerView scannerView;
-    private static final int UPI_PAYMENT=1;
+    private static final int UPI_PAYMENT = 1;
     private IntentIntegrator qrScan;
 
     @Override
@@ -55,21 +55,17 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     @Override
     protected void onStart() {
         super.onStart();
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) ;
         {
 
-            if(checkPermission())
-            {
-                if(scannerView==null)
-                {
-                    scannerView= new ZXingScannerView(this);
+            if (checkPermission()) {
+                if (scannerView == null) {
+                    scannerView = new ZXingScannerView(this);
                     setContentView(scannerView);
                 }
                 scannerView.setResultHandler(this);
                 scannerView.startCamera();
-            }
-            else
-            {
+            } else {
                 requestPermissions();
             }
 
@@ -77,9 +73,11 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         }
 
     }
+
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{CAMERA}, REQUEST_CAMERA);
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -92,7 +90,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                         startActivity(intent);
                     } else {
                         Toast.makeText(ScannerActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
-                        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA );
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
                     }
                 }
                 break;
@@ -112,26 +110,25 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     @Override
     public void handleResult(Result rawResult) {
         final String scanresult = rawResult.getText();
-        Uri uri =Uri.parse("upi://pay").buildUpon()
-                .appendQueryParameter("pa",scanresult)
-                .appendQueryParameter("pn", "UPI")
-                .appendQueryParameter("tn", "Hint")
-                .appendQueryParameter("am", "0")
-                .appendQueryParameter("cu","INR").build();
+        Uri   uri =
+                new Uri.Builder()
+                        .scheme("upi")
+                        .authority("pay")
+                        .appendQueryParameter("pa", scanresult)
+                        .appendQueryParameter("pn", "to_printArt")
+                        .appendQueryParameter("am", "toStringe")
+                        .appendQueryParameter("cu", "INR")
+                        .appendQueryParameter("tr", "261433")
+                        .build();
         Intent upiintent = new Intent(Intent.ACTION_VIEW);
         upiintent.setData(uri);
 
-        Intent chooser = Intent.createChooser(upiintent,"Pay with");
-        if(null!=chooser.resolveActivity(getPackageManager()))
-        {
-            startActivityForResult(chooser,UPI_PAYMENT);
-        }
-        else
-        {
+        Intent chooser = Intent.createChooser(upiintent, "Pay with");
+        if (null != chooser.resolveActivity(getPackageManager())) {
+            startActivityForResult(chooser, UPI_PAYMENT);
+        } else {
             Toast.makeText(ScannerActivity.this, "No UPI appications found", Toast.LENGTH_SHORT).show();
         }
-
-
 
 
     }
@@ -139,10 +136,19 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("ONE++", ""+requestCode);
-        Log.e("ONE+++", ""+resultCode);
-        Log.e("ONE++",""+data);
-    }
+
+        if (data == null) {
+            Toast.makeText(this, "Incomplet Transaction", Toast.LENGTH_SHORT).show();
+        } else {
+            String trnsID = data.getStringExtra("response");
+            if (trnsID.contains("SUCCESS") || trnsID.contains("Success")) {
+            Log.e("onee","Success");
+            }
+            else
+            {
+                Log.e("onee","Faile");
+            }
+        }
     /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -169,4 +175,5 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     @Override
     public void onClick(View view) {
     }*/
+    }
 }
