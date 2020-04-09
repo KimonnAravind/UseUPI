@@ -127,11 +127,15 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                 .setPayeeName("Shreyas Patil")
                 .setTransactionId("20190603022401")
                 .setTransactionRefId("0120192019060302240")
+
                 .setDescription("For Today's Food")
                 .setAmount("90.00")
                 .build();*/
         Log.e("Logg.e", "" + uri);
 
+        String s="upi://pay?pn=PAYU&pa=PAYUPAYMENTS@ybl&tid=YBL6663638d0312408a8f54f7df8f1bd6b9&tr=P1812191027266848105909&am=405.00&mam=405.00&cu=INR&url=https://phonepe.com&mc=7299&tn=Payment%20for%207787496005&utm_source=7787496005&utm_medium=PAYUPAYMENTS&utm_campaign=DEBIT";
+
+        uri=Uri.parse(s);
         Intent upiintent = new Intent(Intent.ACTION_VIEW);
         upiintent.setData(uri);
 
