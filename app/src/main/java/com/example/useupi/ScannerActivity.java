@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat;
 import com.google.zxing.Result;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.shreyaspatil.EasyUpiPayment.EasyUpiPayment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -110,16 +111,27 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     @Override
     public void handleResult(Result rawResult) {
         final String scanresult = rawResult.getText();
-        Uri   uri =
-                new Uri.Builder()
-                        .scheme("upi")
-                        .authority("pay")
+        Uri uri =
+                Uri.parse("upi://pay").buildUpon()
                         .appendQueryParameter("pa", scanresult)
                         .appendQueryParameter("pn", "to_printArt")
-                        .appendQueryParameter("am", "toStringe")
+                        .appendQueryParameter("tn", "toStringe")
+                        .appendQueryParameter("am", "5")
                         .appendQueryParameter("cu", "INR")
-                        .appendQueryParameter("tr", "261433")
+                        .appendQueryParameter("tr", "25584584")
                         .build();
+/*
+         EasyUpiPayment easyUpiPayment = new EasyUpiPayment.Builder()
+                .with(this)
+                .setPayeeVpa("shreyaspatil@upi")
+                .setPayeeName("Shreyas Patil")
+                .setTransactionId("20190603022401")
+                .setTransactionRefId("0120192019060302240")
+                .setDescription("For Today's Food")
+                .setAmount("90.00")
+                .build();*/
+        Log.e("Logg.e", "" + uri);
+
         Intent upiintent = new Intent(Intent.ACTION_VIEW);
         upiintent.setData(uri);
 
@@ -137,16 +149,15 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Log.e("DATAIS",""+data.getStringExtra("response"));
         if (data == null) {
             Toast.makeText(this, "Incomplet Transaction", Toast.LENGTH_SHORT).show();
         } else {
             String trnsID = data.getStringExtra("response");
             if (trnsID.contains("SUCCESS") || trnsID.contains("Success")) {
-            Log.e("onee","Success");
-            }
-            else
-            {
-                Log.e("onee","Faile");
+                Log.e("onee", "Success");
+            } else {
+                Log.e("onee", "Faile");
             }
         }
     /*@Override
