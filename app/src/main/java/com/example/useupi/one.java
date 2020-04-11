@@ -89,7 +89,6 @@ public class one extends Fragment {
             @Override
             public void onClick(View v) {
            Intent intent = new Intent(getActivity(), ScannerActivity.class);
-           getActivity().finish();
            startActivity(intent);
 
 

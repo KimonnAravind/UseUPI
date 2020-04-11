@@ -111,17 +111,17 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     @Override
     public void handleResult(Result rawResult) {
         final String scanresult = rawResult.getText();
-        Uri uri =
-                Uri.parse("upi://pay").buildUpon()
-                        .appendQueryParameter("pa", scanresult)
-                        .appendQueryParameter("pn", "to_printArt")
-                        .appendQueryParameter("tn", "toStringe")
-                        .appendQueryParameter("am", "5")
-                        .appendQueryParameter("cu", "INR")
-                        .appendQueryParameter("tr", "25584584")
-                        .build();
-/*
-         EasyUpiPayment easyUpiPayment = new EasyUpiPayment.Builder()
+        Uri uri = Uri.parse("upi://pay").buildUpon()
+                .appendQueryParameter("pa", scanresult)
+                .appendQueryParameter("pn", "Use UPI")
+                .appendQueryParameter("tn", "Package")
+                .appendQueryParameter("am", "0")
+                .appendQueryParameter("cu", "INR")
+                .appendQueryParameter("tr", "261433")
+                .appendQueryParameter("tid", "" + String.valueOf(System.currentTimeMillis()))
+                .build();
+
+        /* EasyUpiPayment easyUpiPayment = new EasyUpiPayment.Builder()
                 .with(this)
                 .setPayeeVpa("shreyaspatil@upi")
                 .setPayeeName("Shreyas Patil")
@@ -131,17 +131,18 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                 .setDescription("For Today's Food")
                 .setAmount("90.00")
                 .build();*/
-        Log.e("Logg.e", "" + uri);
+        //Log.e("Logg.e", "" + uri);
 
-        String s="upi://pay?pn=PAYU&pa=PAYUPAYMENTS@ybl&tid=YBL6663638d0312408a8f54f7df8f1bd6b9&tr=P1812191027266848105909&am=405.00&mam=405.00&cu=INR&url=https://phonepe.com&mc=7299&tn=Payment%20for%207787496005&utm_source=7787496005&utm_medium=PAYUPAYMENTS&utm_campaign=DEBIT";
+        //String s="upi://pay?pn=PAYU&pa=PAYUPAYMENTS@ybl&tid=YBL6663638d0312408a8f54f7df8f1bd6b9&tr=P1812191027266848105909&am=405.00&mam=405.00&cu=INR&url=https://phonepe.com&mc=7299&tn=Payment%20for%207787496005&utm_source=7787496005&utm_medium=PAYUPAYMENTS&utm_campaign=DEBIT";
 
-        uri=Uri.parse(s);
+        //uri=Uri.parse(s);
         Intent upiintent = new Intent(Intent.ACTION_VIEW);
         upiintent.setData(uri);
-
         Intent chooser = Intent.createChooser(upiintent, "Pay with");
+
         if (null != chooser.resolveActivity(getPackageManager())) {
             startActivityForResult(chooser, UPI_PAYMENT);
+            Toast.makeText(this, ""+chooser, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(ScannerActivity.this, "No UPI appications found", Toast.LENGTH_SHORT).show();
         }
@@ -153,15 +154,15 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.e("DATAIS",""+data.getStringExtra("response"));
         if (data == null) {
-            Toast.makeText(this, "Incomplet Transaction", Toast.LENGTH_SHORT).show();
+            finish();
         } else {
             String trnsID = data.getStringExtra("response");
             if (trnsID.contains("SUCCESS") || trnsID.contains("Success")) {
-                Log.e("onee", "Success");
+                Toast.makeText(this, "Transaction Success", Toast.LENGTH_SHORT).show();
+                finish();
             } else {
-                Log.e("onee", "Faile");
+                Toast.makeText(this, "Fa", Toast.LENGTH_SHORT).show();
             }
         }
     /*@Override
