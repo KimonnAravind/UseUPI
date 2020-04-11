@@ -112,8 +112,8 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     public void handleResult(Result rawResult) {
         final String scanresult = rawResult.getText();
         Uri uri = Uri.parse("upi://pay").buildUpon()
-                .appendQueryParameter("pa", scanresult)
-                .appendQueryParameter("pn", "Use UPI")
+                .appendQueryParameter("pa", "pl.7904168617@icici")
+                .appendQueryParameter("pn", "9944994231")
                 .appendQueryParameter("tn", "Package")
                 .appendQueryParameter("am", "0")
                 .appendQueryParameter("cu", "INR")
@@ -134,7 +134,6 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         //Log.e("Logg.e", "" + uri);
 
         //String s="upi://pay?pn=PAYU&pa=PAYUPAYMENTS@ybl&tid=YBL6663638d0312408a8f54f7df8f1bd6b9&tr=P1812191027266848105909&am=405.00&mam=405.00&cu=INR&url=https://phonepe.com&mc=7299&tn=Payment%20for%207787496005&utm_source=7787496005&utm_medium=PAYUPAYMENTS&utm_campaign=DEBIT";
-
         //uri=Uri.parse(s);
         Intent upiintent = new Intent(Intent.ACTION_VIEW);
         upiintent.setData(uri);
